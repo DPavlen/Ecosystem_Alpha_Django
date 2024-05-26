@@ -1,0 +1,68 @@
+[tool.poetry]
+name = "Ecosystem_Alpha_Django"
+version = "0.1.0"
+description = "Ecosystem_Alpha_Django."
+authors = ["Pavlen"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11.7"
+django = "5.0.2"
+django-cors-headers = "^4.3.1"
+django-filter = "23.4"
+djangorestframework = "3.14.0"
+djangorestframework-simplejwt = "5.3.1"
+djoser = "2.2.0"
+drf-spectacular = { version = "0.26.5", extras = ["sidecar"] }
+gunicorn = "21.2.0"
+mypy = "1.8.0"
+Pillow = "10.2.0"
+pre-commit = "3.6.2"
+psycopg2-binary = "2.9.9"
+python-dotenv = "1.0.0"
+pytest-django = "==4.8.0"
+ruff = "0.2.2"
+drf-yasg = "^1.21.7"
+django-autoslug = "^1.9.9"
+transliterate = "^1.10.2"
+pytest = "^8.1.1"
+pytest-cov = "^5.0.0"
+factory-boy = "^3.3.0"
+pytest-asyncio = "^0.23.6"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 88
+# Исключения длинных строк
+extend-exclude = [
+    "Ecosystem_Alpha_Django/Ecosystem_Alpha_Django/*.py",
+    "**/models.py",
+    "**/settings.py",
+    "**/migrations/",
+    "**/management/",
+    "**/backend/api/v1/urls.py/",
+    "**backend/services/views.py",
+
+]
+force-exclude = true
+# Линтер ruff
+[tool.ruff.lint]
+preview = true
+select = [
+    "E", # pycodestyle error
+    "W", # pycodestyle warning
+    "F", # pyflakes
+    "I", # isort
+    "N", # pep8-naming
+] # all rules here https://docs.astral.sh/ruff/rules/#pep8-naming-n
+fixable = ["F401", "E501", "D400"]
+ignore = ["E203", "I001", "N999", "D400"]
+
+[tool.ruff.lint.isort]
+lines-after-imports = -1
+
+[pytest.ini_options]
+pythonpath = ["."]
