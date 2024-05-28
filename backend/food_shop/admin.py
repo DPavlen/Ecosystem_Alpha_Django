@@ -23,9 +23,9 @@ class SubcategoryAdmin(admin.ModelAdmin):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     """Настроенная панель админки продуктов."""
-    list_display = ("pk", "name", "date_add", "slug", "category", "price")
+    list_display = ("pk", "name", "date_add", "slug", "subcategory", "price")
     search_fields = ("name", "slug", "date_add", "price")
-    list_filter = ("name","category", "price")
+    list_filter = ("name", "subcategory", "price")
     empty_value_display = "-пусто-"
 
     def formatted_date_add(self, obj):
@@ -37,21 +37,21 @@ class ProductAdmin(admin.ModelAdmin):
 @admin.register(ProductCart)
 class ProductCartAdmin(admin.ModelAdmin):
     """Настроенная панель админки продуктовой корзины."""
-    list_display = ("pk", "buyer", "date_create",)
-    search_fields = ("buyer", "buyer", "date_create",)
-    list_filter = ("buyer", "date_create",)
+    list_display = ("pk", "buyer", "date_created",)
+    search_fields = ("buyer", "buyer", "date_created",)
+    list_filter = ("buyer", "date_created",)
     empty_value_display = "-пусто-"
 
-    def formatted_date_create(self, obj):
+    def formatted_date_created(self, obj):
         return obj.date_create.strftime("%B %d, %Y, %I:%M %p")
 
-    formatted_date_create.short_description = "Дата создания корзины"
+    formatted_date_created.short_description = "Дата создания корзины"
 
 
 @admin.register(ShoppingCartProduct)
 class ShoppingCartProductAdmin(admin.ModelAdmin):
     """Настроенная панель админки продуктовой корзины товаров."""
-    list_display = ("pk", "product_cart", "product", "amount")
-    search_fields = ("pk", "product_cart", "product", "amount")
+    list_display = ("pk", "product_cart", "product", "amount", "date_created")
+    search_fields = ("pk", "product_cart", "product", "amount", "date_created")
     list_filter = ("product_cart", "product",)
     empty_value_display = "-пусто-"

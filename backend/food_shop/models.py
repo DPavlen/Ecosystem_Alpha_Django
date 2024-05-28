@@ -91,12 +91,6 @@ class Product(models.Model):
         max_length=250,
         verbose_name="Название продукта"
     )
-    category = models.ForeignKey(
-        Category,
-        on_delete=models.CASCADE,
-        related_name="products",
-        verbose_name="Категория"
-    )
     subcategory = models.ForeignKey(
         Subcategory,
         on_delete=models.CASCADE,
@@ -140,7 +134,7 @@ class Product(models.Model):
     class Meta:
         verbose_name = "Продукт"
         verbose_name_plural = "Продукты"
-        ordering = ("date_add",)
+        ordering = ["-date_add"]
 
     def __str__(self):
         return f"{self.name}"
@@ -153,7 +147,7 @@ class ProductCart(models.Model):
         on_delete=models.CASCADE,
         verbose_name="Пользователь продуктовой корзины"
     )
-    date_create = models.DateTimeField(
+    date_created = models.DateTimeField(
         auto_now_add=True,
         verbose_name="Дата создания продуктовой корзины"
     )
@@ -161,7 +155,7 @@ class ProductCart(models.Model):
     class Meta:
         verbose_name = "Продуктовая корзина"
         verbose_name_plural = "Продуктовые корзины"
-        ordering = ("date_create",)
+        ordering = ["-date_created"]
 
     def __str__(self):
         return f"Покупатель {self.buyer}"
@@ -186,13 +180,18 @@ class ShoppingCartProduct(models.Model):
     )
     amount = models.PositiveSmallIntegerField(
         default=1,
-        verbose_name="Количество"
+        verbose_name="Количество продуктов в корзине"
+    )
+    date_created = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Дата создания корзины покупок пользователя"
     )
 
     class Meta:
         unique_together = ("product_cart", "product")
         verbose_name = "Продукт в корзине у пользователя"
         verbose_name_plural = "Продукты в корзинах у пользователей"
+        ordering = ["-date_created"]
 
     def __str__(self):
         return f"В продуктовой козине {self.product.name} - {self.amount} шт."
