@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "core.apps.CoreConfig",
     "food_shop.apps.FoodShopConfig",
     "mptt",
+    "api.v1.apps.ApiConfig",
 ]
 
 MIDDLEWARE = [
