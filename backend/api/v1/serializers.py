@@ -6,6 +6,7 @@ from food_shop.models import Category, Subcategory, Product, ProductCart, Shoppi
 
 class CategorySerializer(serializers.ModelSerializer):
     """Сериализатор для категорий товаров."""
+
     class Meta:
         model = Category
         fields = (
@@ -32,8 +33,8 @@ class SubcategorySerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_category(instance):
-       """Получить название категории продукта."""
-       return instance.category.name
+        """Получить название категории продукта."""
+        return instance.category.name
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -62,6 +63,7 @@ class ProductCartSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShoppingCartProduct
         fields = (
+            "product_cart",
             "product",
             "amount",
             "total_price",
@@ -90,4 +92,6 @@ class ShoppingCartProductSerializer(serializers.ModelSerializer):
         )
 
     def get_total_price(self, instance):
-        return f"{instance.product.price * instance.amount} рублей"
+        if isinstance(instance, ShoppingCartProduct):
+            return instance.product.price * instance.amount
+        return None

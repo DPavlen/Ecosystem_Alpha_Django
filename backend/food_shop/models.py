@@ -195,7 +195,7 @@ class ProductCart(models.Model):
         ordering = ["-date_created"]
 
     def __str__(self):
-        return f"Покупатель {self.user}"
+        return f"Покупатель-пользователь {self.user}"
 
 
 class ShoppingCartProduct(models.Model):
@@ -225,13 +225,14 @@ class ShoppingCartProduct(models.Model):
     )
 
     class Meta:
-        unique_together = ("product_cart", "product")
         verbose_name = "Продукт в корзине у пользователя"
         verbose_name_plural = "Продукты в корзинах у пользователей"
         ordering = ["-date_created"]
 
     def __str__(self):
-        return f"В продуктовой козине {self.product.name} - {self.amount} шт."
+        return (f"В продуктовой козине - пользователя {self.product_cart.user},"
+                f" {self.product.name} в количестве {self.amount} "
+                f" {self.product.measurement_unit}")
 
 
 
