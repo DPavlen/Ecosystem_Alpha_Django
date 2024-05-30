@@ -1,6 +1,6 @@
 from django.db import models
 from autoslug import AutoSlugField
-# from mptt.models import MPTTModel, TreeForeignKey
+from PIL import Image
 from transliterate import translit
 
 from users.models import MyUser
@@ -13,6 +13,13 @@ def get_slug(instance):
         instance.name,
         'ru',
         reversed=True)
+
+
+def resize_image(image, max_size):
+    """Функция для изменения размера изображения"""
+    img = Image.open(image)
+    img.thumbnail((max_size, max_size))
+    img.save(image.path)
 
 
 class Category(models.Model):
@@ -86,6 +93,11 @@ class Subcategory(models.Model):
 
 class Product(models.Model):
     """Модель продукта."""
+    UNIT_CHOICES = (
+        ("kg", "Килограммы"),
+        ("lt", "Литры"),
+        ("pcs", "Штуки"),
+    )
     name = models.CharField(
         unique=True,
         max_length=250,
@@ -107,6 +119,12 @@ class Product(models.Model):
         max_digits=10,
         decimal_places=2,
         verbose_name="Стоимость продукта"
+    )
+    measurement_unit = models.CharField(
+        max_length=50,
+        choices=UNIT_CHOICES,
+        default="kg",
+        verbose_name="Единица измерения"
     )
     icon_small = models.ImageField(
         upload_to="products_small/",
@@ -131,6 +149,25 @@ class Product(models.Model):
         verbose_name="Дата добавления продукта"
     )
 
+    def save(self, *args, **kwargs):
+        """
+        Сохраняет текущий экземпляр и изменяет размер связанных изображений.
+        Есть ли у экземпляра изображения, назначенные полям `icon_small`,
+        `icon_middle` и `icon_big`, и изменяет их размер до предопределенных
+        размеров с помощью утилиты `resize_image`.
+        Параметры:
+        *args: Список аргументов переменной длины.
+        **kwargs: Произвольные именованные аргументы.
+        Возвращает: None
+            """
+        super().save(*args, **kwargs)
+        if self.icon_small:
+            resize_image(self.icon_small, 200)
+        if self.icon_middle:
+            resize_image(self.icon_middle, 400)
+        if self.icon_big:
+            resize_image(self.icon_big, 600)
+
     class Meta:
         verbose_name = "Продукт"
         verbose_name_plural = "Продукты"
@@ -142,7 +179,7 @@ class Product(models.Model):
 
 class ProductCart(models.Model):
     """Модель продуктовой корзины у покупателя-пользователя."""
-    buyer = models.ForeignKey(
+    user = models.ForeignKey(
         MyUser,
         on_delete=models.CASCADE,
         verbose_name="Пользователь продуктовой корзины"
@@ -158,7 +195,7 @@ class ProductCart(models.Model):
         ordering = ["-date_created"]
 
     def __str__(self):
-        return f"Покупатель {self.buyer}"
+        return f"Покупатель {self.user}"
 
 
 class ShoppingCartProduct(models.Model):

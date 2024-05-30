@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.fields import IntegerField
 
-from food_shop.models import Category, Subcategory, Product
+from food_shop.models import Category, Subcategory, Product, ProductCart, ShoppingCartProduct
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -19,8 +19,6 @@ class CategorySerializer(serializers.ModelSerializer):
 class SubcategorySerializer(serializers.ModelSerializer):
     """Сериализатор для подкатегорий товаров."""
     category = serializers.SerializerMethodField()
-    #category = serializers.CharField()
-
 
     class Meta:
         model = Subcategory
@@ -40,9 +38,7 @@ class SubcategorySerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     """Сериализатор для продуктов."""
-    category = serializers.SerializerMethodField()
     subcategory = SubcategorySerializer()
-    #icons = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
@@ -50,15 +46,48 @@ class ProductSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "slug",
-            "category",
             "subcategory",
             "price",
+            "measurement_unit",
             "icon_small",
             "icon_middle",
             "icon_big",
         )
 
+
+class ProductCartSerializer(serializers.ModelSerializer):
+    """Сериализатор для отображения списка продуктов в корзине."""
+    total_price = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ShoppingCartProduct
+        fields = (
+            "product",
+            "amount",
+            "total_price",
+            "date_created"
+        )
+
     @staticmethod
-    def get_category(instance):
-        """Получить название категории продукта."""
-        return instance.subcategory.category.name
+    def get_total_price(instance):
+        """Возвращает общую стоимость каждого продукта в корзине."""
+        return instance.product.price * instance.amount
+
+
+class ShoppingCartProductSerializer(serializers.ModelSerializer):
+    product = serializers.PrimaryKeyRelatedField(
+        queryset=Product.objects.all(),
+    )
+    total_price = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ShoppingCartProduct
+        fields = (
+            "product_cart",
+            "product",
+            "amount",
+            "total_price"
+        )
+
+    def get_total_price(self, instance):
+        return f"{instance.product.price * instance.amount} рублей"

@@ -468,6 +468,16 @@ django-js-asset = "*"
 tests = ["coverage[toml]", "mock-django"]
 
 [[package]]
+name = "django-querycount"
+version = "0.8.3"
+description = "Middleware that Prints the number of DB queries to the runserver console."
+optional = false
+python-versions = "*"
+files = [
+    {file = "django-querycount-0.8.3.tar.gz", hash = "sha256:0782484e8a1bd29498fa0195a67106e47cdcc98fafe80cebb1991964077cb694"},
+]
+
+[[package]]
 name = "django-templated-mail"
 version = "1.1.1"
 description = "Send emails using Django template system."
@@ -1639,4 +1649,4 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11.7"
-content-hash = "44571778e85785a4b77bf0f454f902610475a97186acc8c9809fa30c0842e4f0"
+content-hash = "667cd0a1d9f0468d83f6996a351b1ddbcaa0644fd9e25a6e7a9196182021f6fc"

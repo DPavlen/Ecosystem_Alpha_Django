@@ -1,10 +1,11 @@
 from django.db.models import Count, F
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 
 from api.v1.serializers import (
-    CategorySerializer, SubcategorySerializer, ProductSerializer)
+    CategorySerializer, SubcategorySerializer, ProductSerializer, ProductCartSerializer, ShoppingCartProductSerializer)
 #from core.pagination import PaginationCust
-from food_shop.models import Category, Subcategory, Product
+from food_shop.models import Category, Subcategory, Product, ShoppingCartProduct
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
@@ -17,7 +18,6 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
 class SubcategoryViewSet(viewsets.ReadOnlyModelViewSet):
     """Кастомный ViewSet для работы c подкатегориями."""
     queryset = Subcategory.objects.select_related("category")
-    #queryset = Subcategory.objects.annotate(category_name=F("category__name"))
     serializer_class = SubcategorySerializer
     # pagination_class = PaginationCust
 
@@ -28,4 +28,26 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
         "subcategory__category"
     )
     serializer_class = ProductSerializer
+    # permission_classes = (IsAuthenticated,)
     # pagination_class = PaginationCust
+
+
+class ShoppingCartProductViewSet(viewsets.ModelViewSet):
+    """Кастомный ViewSet  для работы с продуктовой корзиной."""
+    queryset = ShoppingCartProduct.objects.all()
+    serializer_class = ShoppingCartProductSerializer
+    permission_classes = (IsAuthenticated,)
+    # pagination_class = PaginationCust
+
+    def get_serializer_class(self):
+        """Получить сериализатор."""
+        return ShoppingCartProductSerializer
+
+    def get_queryset(self):
+        """Проверка queryset по текущему пользователю."""
+        user = self.request.user
+        return ShoppingCartProduct.objects.select_related(
+            "product_cart"
+        ).prefetch_related("product").filter(
+            product_cart__user=user
+        )
