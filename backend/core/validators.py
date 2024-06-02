@@ -14,7 +14,8 @@ def username_validator(username):
 
 
 def name_validator(name):
-    """Общий валидатор для полей 'Имя пользователя' и 'Фамилия пользователя' модели User."""
+    """Общий валидатор: Имя пользователя
+     и Фамилия пользователя модели User."""
     if not search(r"^[A-Za-zА-Яа-я0-9]{1,150}$", name):
         raise ValidationError("В поле пользователя используются недопустимые символы")
 
@@ -22,6 +23,5 @@ def name_validator(name):
 def validate_mobile(value):
     """Валидация для поля "Телефон"."""
     rule = re.compile(r"^\+?[7-8]?[0-9]{10}$")
-
     if not rule.search(value):
         raise ValidationError("Неверный мобильный номер.")

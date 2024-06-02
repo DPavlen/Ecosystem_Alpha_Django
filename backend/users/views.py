@@ -30,4 +30,3 @@ class CustomUserViewSet(UserViewSet):
         if self.action == "list":
             return (IsAdminUser(),)
         return (AllowAny(),)
-

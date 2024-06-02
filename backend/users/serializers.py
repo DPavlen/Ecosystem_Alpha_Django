@@ -1,4 +1,4 @@
-from djoser.serializers import UserCreateSerializer, UserSerializer
+from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 from users.models import MyUser
 
@@ -29,8 +29,7 @@ class CustomUserSerializer(UserCreateSerializer):
             "username": {"required": True},
             "first_name": {"required": False},
             "last_name": {"required": False},
-            "password": {"write_only": True,
-                         "required": False},
+            "password": {"write_only": True, "required": False},
         }
 
     def create(self, validated_data):
