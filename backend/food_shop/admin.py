@@ -10,10 +10,60 @@ from food_shop.models import (
 )
 
 
+class CategorySubcategoryInline(admin.TabularInline):
+    """
+    Связь между категорией и подкатегорией товара в административной панели.
+    Attributes:
+        model (Model): Модель связи между категорией и подкатегорией.
+        min_num (int): Минимальное количество форм для отображения.
+        extra (int): Дополнительное количество пустых форм.
+    """
+    model = Subcategory
+    min_num = 0
+    extra = 0
+
+
+class SubcategoryProductInline(admin.TabularInline):
+    """
+    Связь между подкатегорией и продуктом в административной панели.
+    Attributes:
+        model (Model): Модель связи между подкатегорией и продуктом.
+        min_num (int): Минимальное количество форм для отображения.
+        extra (int): Дополнительное количество пустых форм.
+    """
+
+    model = Product
+    min_num = 0
+    extra = 0
+
+
+class ProductShoppingCartInline(admin.TabularInline):
+    """
+    Связь между продуктом и продуктовой корзиной пользователя
+    в административной панели.
+    Attributes:
+        model (Model): Модель связи между продуктами и корзиной.
+        min_num (int): Минимальное количество форм для отображения.
+        extra (int): Дополнительное количество пустых форм.
+    """
+
+    model = ShoppingCartProduct
+    min_num = 0
+    extra = 0
+
+
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    """Настроенная панель админки категории товара."""
+    """
+    Настроенная панель админки категории товара.
+    Attributes:
+        inlines (list): Список классов, определяющих связи в административной панели.
+        list_display (tuple): Кортеж полей, отображаемых в списке записей.
+        search_fields (tuple): Кортеж полей, по которым осуществляется поиск.
+        empty_value_display (str): Значение, отображаемое при отсутствии значения поля.
+    """
 
+    inlines = [CategorySubcategoryInline]
     list_display = ("pk", "name", "slug")
     search_fields = ("name", "slug")
     empty_value_display = "-пусто-"
@@ -21,8 +71,17 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Subcategory)
 class SubcategoryAdmin(admin.ModelAdmin):
-    """Настроенная панель админки подкатегории товара."""
+    """
+    Настроенная панель админки подкатегории товара.
+    Attributes:
+        inlines (list): Список классов, определяющих связи в административной панели.
+        list_display (tuple): Кортеж полей, отображаемых в списке записей.
+        search_fields (tuple): Кортеж полей, по которым осуществляется поиск.
+        list_filter (tuple): Кортеж полей, используемых для фильтрации записей.
+        empty_value_display (str): Значение, отображаемое при отсутствии значения поля.
+    """
 
+    inlines = [SubcategoryProductInline]
     list_display = (
         "pk",
         "name",
@@ -38,6 +97,7 @@ class SubcategoryAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     """Настроенная панель админки продуктов."""
 
+    inlines = [ProductShoppingCartInline]
     list_display = (
         "pk",
         "name",
