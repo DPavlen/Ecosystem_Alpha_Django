@@ -9,8 +9,11 @@ from users.models import MyUser
 
 
 def get_slug(instance):
-    """Транслитерованный слаг для
-    категорий и подкатегорий товаров."""
+    """
+    Транслитерованный слаг для
+    категорий, подкатегорий и продуктов.
+    """
+
     return translit(
         instance.name,
         'ru',
@@ -18,14 +21,30 @@ def get_slug(instance):
 
 
 def resize_image(image, max_size):
-    """Функция для изменения размера изображения"""
+    """
+     Изменяет размер изображения, сохраняя его пропорции, так чтобы
+    ни ширина, ни высота не превышали заданное максимальное значение.
+    Параметры:
+    image (File): Файл изображения, который нужно изменить.
+    max_size (int): Максимальное значение для ширины и высоты изображения.
+    Возвращает:
+    None: Функция изменяет размер изображения на месте и сохраняет его
+          в том же файле.
+    """
+
     img = Image.open(image)
     img.thumbnail((max_size, max_size))
     img.save(image.path)
 
 
 class Category(models.Model):
-    """Модель категорий товаров."""
+    """
+    Модель категорий товаров.
+    Атрибуты:
+        - name: Название категории.
+        - slug: Уникальный слаг категории.
+        - icon: Фото категории.
+    """
     name = models.CharField(
         max_length=LenghtField.MAX_LENGT_NAME.value,
         verbose_name="Название категории"
@@ -49,13 +68,22 @@ class Category(models.Model):
 
     def __str__(self):
         """
-        Dunder-метод для отображения имени категории как строки.
+        Возвращает строковое представление категории.
+        Returns: str: Название категории.
         """
         return self.name
 
 
 class Subcategory(models.Model):
-    """Модель подкатегории товара."""
+    """
+    Модель подкатегории товара.
+    Атрибуты:
+        - name: Название подкатегории.
+        - category: Связанная категория.
+        - slug: Уникальный слаг подкатегории.
+        - icon: Фото подкатегории.
+    """
+
     name = models.CharField(
         unique=True,
         max_length=LenghtField.MAX_LENGT_NAME.value,
@@ -87,14 +115,28 @@ class Subcategory(models.Model):
 
     def __str__(self):
         """
-        Dunder-метод для отображения имени подкатегории как строки.
+        Возвращает строковое представление подкатегории.
+        Returns: str: Название категории.
         """
 
         return self.name
 
 
 class Product(models.Model):
-    """Модель продукта."""
+    """
+    Модель продукта.
+    Атрибуты:
+        - name: Название продукта.
+        - subcategory: Подкатегория продукта.
+        - slug: Уникальный слаг продукта.
+        - price: Стоимость продукта.
+        - measurement_unit: Единица измерения.
+        - icon_small: Маленькое фото продукта.
+        - icon_middle: Среднее фото продукта.
+        - icon_big: Большое фото продукта.
+        - date_add: Дата добавления продукта.
+    """
+
     UNIT_CHOICES = (
         ("kg", "Килограммы"),
         ("lt", "Литры"),
@@ -131,7 +173,8 @@ class Product(models.Model):
             MaxValueValidator(
                 LenghtField.MAX_PRICE_PRODUCT.value,
                 message=f"Максимальная стоимость продукта "
-                        f"должна быть не больше {LenghtField.MAX_PRICE_PRODUCT.value}.",
+                        f"должна быть не больше "
+                        f"{LenghtField.MAX_PRICE_PRODUCT.value}.",
             ),
         ],
     )
@@ -189,11 +232,22 @@ class Product(models.Model):
         ordering = ["-date_add"]
 
     def __str__(self):
-        return f"{self.name}"
+        """
+        Возвращает строковое представление продукта.
+        Returns: str: Название продукта.
+        """
+
+        return self.name
 
 
 class ProductCart(models.Model):
-    """Модель продуктовой корзины у покупателя-пользователя."""
+    """
+    Модель продуктовой корзины у покупателя-пользователя.
+    Атрибуты:
+        - user: Пользователь, владеющий корзиной.
+        - date_created: Дата создания корзины.
+    """
+
     user = models.ForeignKey(
         MyUser,
         on_delete=models.CASCADE,
@@ -210,14 +264,24 @@ class ProductCart(models.Model):
         ordering = ["-date_created"]
 
     def __str__(self):
+        """
+        Возвращает строковое представление пользователя корзины.
+        Returns: str: имя пользователя.
+        """
         return f"Покупатель-пользователь {self.user}"
 
 
 class ShoppingCartProduct(models.Model):
-    """Модель корзины покупок товаров.
-    Связка между продуктовой корзины покупателя-пользователя
-    и продуктами.
     """
+    Модель корзины покупок товаров.
+    Связка между продуктовой корзиной покупателя-пользователя и продуктами.
+    Атрибуты:
+        - product_cart: Продуктовая корзина пользователя.
+        - product: Продукт в корзине.
+        - amount: Количество продуктов в корзине.
+        - date_created: Дата создания корзины покупок пользователя.
+    """
+
     product_cart = models.ForeignKey(
         ProductCart,
         on_delete=models.CASCADE,
@@ -260,6 +324,12 @@ class ShoppingCartProduct(models.Model):
         ordering = ["-date_created"]
 
     def __str__(self):
+        """
+        Возвращает строковое представление продукта в корзине.
+        Returns:
+        str: Описание продукта в корзине с количеством и единицей измерения.
+        """
+
         return (f"В продуктовой козине - пользователя {self.product_cart.user},"
                 f" {self.product.name} в количестве {self.amount} "
                 f" {self.product.measurement_unit}")

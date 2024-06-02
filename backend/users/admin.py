@@ -27,6 +27,11 @@ class UsersAdmin(BaseAdminSettings):
         - search_fields: Поля, по которым доступен поиск.
     """
 
-    list_display = ("id", "role", "username", "email", )
+    list_display = (
+        "id",
+        "role",
+        "username",
+        "email",
+    )
     list_display_links = ("id", "username")
     search_fields = ("username", "role")

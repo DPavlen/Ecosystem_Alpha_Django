@@ -2,7 +2,7 @@ from enum import IntEnum
 
 
 class LenghtField(IntEnum):
-    """Длины полей в приложении Юзеров и т.д."""
+    """Длины полей в приложении Юзеров, Food_Shop."""
 
     # Атрибуты приложения Юзеров
     # Максимальная длина поля email User.email
