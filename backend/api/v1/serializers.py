@@ -55,41 +55,6 @@ class CategorySerializer(serializers.ModelSerializer):
         )
 
 
-# class SubcategorySerializer(serializers.ModelSerializer):
-#     """
-#     Сериализатор для подкатегорий товаров.
-#     Attributes:
-#         - id: Уникальный идентификатор подкатегории.
-#         - name: Название подкатегории.
-#         - slug: Слаг подкатегории.
-#         - category: Название связанной категории.
-#         - icon: Иконка подкатегории.
-#     """
-#
-#     category = serializers.SerializerMethodField()
-#
-#     class Meta:
-#         model = Subcategory
-#         fields = (
-#             "id",
-#             "name",
-#             "slug",
-#             "category",
-#             "icon"
-#         )
-#
-#     @staticmethod
-#     def get_category(instance):
-#         """
-#         Получить название категории продукта.
-#         Parameters:
-#             instance (Subcategory): Экземпляр подкатегории.
-#         Returns:
-#             str: Название связанной категории.
-#         """
-#         return instance.category.name
-
-
 class ProductSerializer(serializers.ModelSerializer):
     """
     Сериализатор для продуктов.
@@ -153,7 +118,10 @@ class ShoppingCartProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ShoppingCartProduct
-        fields = ("product", "amount", "total_price")
+        fields = (
+            "product",
+            "amount",
+            "total_price")
 
     def get_total_price(self, instance):
         """
@@ -164,7 +132,7 @@ class ShoppingCartProductSerializer(serializers.ModelSerializer):
             float: Общая стоимость товара.
         """
 
-        return instance.product.price * instance.amount
+        return (instance.product.price * instance.amount)
 
 
 class ShoppingCartSummarySerializer(serializers.Serializer):

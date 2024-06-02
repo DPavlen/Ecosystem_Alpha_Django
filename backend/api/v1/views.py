@@ -1,5 +1,6 @@
 from django.db.models import F, Sum
 from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import viewsets, status, permissions
 
@@ -33,7 +34,7 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = Category.objects.prefetch_related("subcategories")
     serializer_class = CategorySerializer
-    permission_classes = permissions.AllowAny()
+    permission_classes = (AllowAny,)
     pagination_class = PaginationCust
 
 
@@ -49,7 +50,7 @@ class SubcategoryViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = Subcategory.objects.select_related("category")
     serializer_class = SubcategorySerializer
-    permission_classes = permissions.AllowAny()
+    permission_classes = (AllowAny,)
     pagination_class = PaginationCust
 
 
@@ -68,7 +69,7 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
         "subcategory__category"
     )
     serializer_class = ProductSerializer
-    permission_classes = permissions.AllowAny()
+    permission_classes = (AllowAny,)
     pagination_class = PaginationCust
 
 
@@ -94,9 +95,9 @@ class ShoppingCartProductViewSet(viewsets.ModelViewSet):
         """
 
         action_permissions = {
-            "list": (permissions.AllowAny(),),
-            "retrieve": (permissions.AllowAny(),),
-            "create": (permissions.IsAuthenticated(),),
+            "list": (IsOwnerOrReadOnlyOrAdmin(),),
+            "retrieve": (IsOwnerOrReadOnlyOrAdmin(),),
+            "create": (IsOwnerOrReadOnlyOrAdmin(),),
             "update": (IsOwnerOrReadOnlyOrAdmin(),),
             "partial_update": (IsOwnerOrReadOnlyOrAdmin(),),
             "destroy": (IsOwnerOrReadOnlyOrAdmin(),),
