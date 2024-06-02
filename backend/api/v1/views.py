@@ -1,14 +1,19 @@
-from django.db.models import Count, F
+from django.db.models import Count, F, Sum
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import viewsets, status, permissions
 from rest_framework.permissions import IsAuthenticated
+import logging
+
+logger = logging.getLogger(__name__)
 
 from api.v1.serializers import (
     CategorySerializer,
     SubcategorySerializer,
     ProductSerializer,
-    ShoppingCartProductSerializer)
+    ShoppingCartProductSerializer,
+    ShoppingCartSummarySerializer,
+)
 #from core.pagination import PaginationCust
 from food_shop.models import Category, Subcategory, Product, ShoppingCartProduct, ProductCart
 
@@ -57,7 +62,9 @@ class ShoppingCartProductViewSet(viewsets.ModelViewSet):
         return action_permissions.get(self.action, super().get_permissions())
 
     def get_serializer_class(self):
-        """Получить сериализатор."""
+        """Получить сериализатор в зависимости от операции.."""
+        if self.action == "composition_basket":
+            return ShoppingCartSummarySerializer
         return ShoppingCartProductSerializer
 
     def get_queryset(self):
@@ -70,7 +77,8 @@ class ShoppingCartProductViewSet(viewsets.ModelViewSet):
         )
 
     def perform_create(self, serializer):
-        """Добавляет продукт в корзину или обновляет количество, если он уже в корзине."""
+        """Добавляет продукт в корзину или обновляет(увеличивает)
+        количество, если он уже в корзине."""
         try:
             user = self.request.user
             product_id = serializer.validated_data['product'].id
@@ -123,29 +131,61 @@ class ShoppingCartProductViewSet(viewsets.ModelViewSet):
                 "detail": "Такого продукта в корзине пользователя нет!"
             }, status=status.HTTP_404_NOT_FOUND)
 
-    @action(detail=False, methods=["get"], url_path="composition_basket")
-    def composition_basket(self, request):
+    @action(
+        detail=False, methods=["post"],
+        url_path="reduce_product",
+        permission_classes=[permissions.IsAuthenticated],
+    )
+    def reduce_product(self, request):
+        """Уменьшает количество продукта в корзине."""
+        product_id = request.data.get("product")
+        amount = request.data.get("amount")
+
+        try:
+            product = ShoppingCartProduct.objects.get(product_id=product_id)
+            if amount > 0:
+                product.amount -= amount
+                product.save()
+                return Response(
+                    {"message": "Количество продукта успешно уменьшено."},
+                    status=200)
+            else:
+                return Response(
+                    {"message": "Количество должно быть положительным числом."},
+                    status=400)
+        except ShoppingCartProduct.DoesNotExist:
+            return Response({"message": "Продукт не найден в корзине."}, status=404)
+
+    @action(
+        detail=False, methods=["get"],
+        url_path="composition_basket_sum",
+        permission_classes=[IsAuthenticated],
+    )
+    def composition_basket_sum(self, request):
         """Выводит состав корзины с подсчетом количества товаров
         и суммы стоимости товаров в корзине."""
         user = request.user
-        shopping_cart = ShoppingCartProduct.objects.select_related(
-            "product_cart"
-        ).prefetch_related("product").filter(
+        products = ShoppingCartProduct.objects.filter(
             product_cart__user=user
+        ).values_list("product__name", flat=True)
+        total_data = ShoppingCartProduct.objects.filter(
+            product_cart__user=user
+        ).aggregate(
+            total_amount=Sum("amount"),
+            total_price=Sum(F("amount") * F("product__price"))
         )
-        total_amount = 0
-        total_price = 0
-        for item in shopping_cart:
-            total_amount += item.amount
-            total_price += item.product.price * item.amount
-
         data = {
-            "total_amount": total_amount,
-            "total_price": f"{total_price} рублей"
+            "Продукты": "; ".join(products) or "Нет продуктов в корзине!",
+            "Общее количество продуктов": total_data["total_amount"] or "Нет продуктов в корзине!",
+            "Общая сумма продуктов": f"{total_data['total_price'] or 0} рублей"
         }
         return Response(data, status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=["delete"], url_path="clear_product_cart")
+    @action(
+        detail=False, methods=["delete"],
+        url_path="clear_product_cart",
+        permission_classes=[IsAuthenticated],
+    )
     def clear_product_cart(self, request):
         """Полностью очищает продуктовую корзину у пользователя."""
         user = request.user

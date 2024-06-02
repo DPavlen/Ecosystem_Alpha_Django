@@ -90,7 +90,15 @@ class ProductCartAdmin(admin.ModelAdmin):
 @admin.register(ShoppingCartProduct)
 class ShoppingCartProductAdmin(admin.ModelAdmin):
     """Настроенная панель админки продуктовой корзины товаров."""
-    list_display = ("pk", "product_cart", "product", "amount", "date_created")
-    search_fields = ("pk", "product_cart", "product", "amount", "date_created")
+    list_display = (
+        "pk",
+        "product_cart",
+        "product_cart_id",
+        "product",
+        "product_id",
+        "amount",
+        "date_created"
+    )
+    search_fields = ("pk", "product_cart", "product", "product_id", "amount", "date_created")
     list_filter = ("product_cart", "product",)
     empty_value_display = "-пусто-"

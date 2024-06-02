@@ -1,7 +1,9 @@
 from rest_framework import serializers
 from rest_framework.fields import IntegerField
 
+from core.constants import LenghtField
 from food_shop.models import Category, Subcategory, Product, ProductCart, ShoppingCartProduct
+from users.serializers import CustomUserSerializer
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -39,7 +41,8 @@ class SubcategorySerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     """Сериализатор для продуктов."""
-    subcategory = SubcategorySerializer()
+    subcategory = SubcategorySerializer(read_only=True)
+    category = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
@@ -53,45 +56,49 @@ class ProductSerializer(serializers.ModelSerializer):
             "icon_small",
             "icon_middle",
             "icon_big",
-        )
-
-
-class ProductCartSerializer(serializers.ModelSerializer):
-    """Сериализатор для отображения списка продуктов в корзине."""
-    total_price = serializers.SerializerMethodField()
-
-    class Meta:
-        model = ShoppingCartProduct
-        fields = (
-            "product_cart",
-            "product",
-            "amount",
-            "total_price",
-            "date_created"
+            "category",
         )
 
     @staticmethod
-    def get_total_price(instance):
-        """Возвращает общую стоимость каждого продукта в корзине."""
-        return instance.product.price * instance.amount
+    def get_category(instance):
+        """Получить название категории продукта."""
+        return instance.subcategory.category.name
 
 
 class ShoppingCartProductSerializer(serializers.ModelSerializer):
     product = serializers.PrimaryKeyRelatedField(
         queryset=Product.objects.all(),
     )
+    amount = serializers.IntegerField(
+    )
+    #name = serializers.SerializerMethodField()
     total_price = serializers.SerializerMethodField()
 
     class Meta:
         model = ShoppingCartProduct
         fields = (
-            "product_cart",
+            #"product_id",
             "product",
+            #"name",
             "amount",
             "total_price"
         )
 
+    # def get_name(self, instance):
+    #     return instance.product.name
+
     def get_total_price(self, instance):
-        if isinstance(instance, ShoppingCartProduct):
-            return instance.product.price * instance.amount
-        return None
+        return instance['product'].price * instance['amount']
+
+
+
+class ShoppingCartSummarySerializer(serializers.Serializer):
+    total_amount = serializers.IntegerField()
+    total_price = serializers.CharField()
+
+    class Meta:
+        model = ShoppingCartProduct
+        fields = (
+            "total_amount",
+            "total_price",
+        )

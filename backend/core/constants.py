@@ -27,3 +27,17 @@ class LenghtField(IntEnum):
     MIN_LENGHT_FIRST_NAME = 1
     # Минимальная длина поля last_name
     MIN_LENGHT_LAST_NAME = 1
+
+    # Атрибуты приложения Food_Shop
+    # Максимальная длиная атрибутая name
+    MAX_LENGT_NAME = 150
+    # Максимальная длина слага тега slug
+    MAX_LEN_SLUG = 150
+    # Максимальная длина единицы измерения measurement_unit
+    MAX_LENGT_MEASUREMENT_UNIT = 50
+    # Количество продуктов в ShoppingCartProduct.amount
+    MIN_AMOUNT_PRODUCT = 1
+    MAX_AMOUNT_PRODUCT = 1000
+    # Стоимость продукта в Product.price
+    MIN_PRICE_PRODUCT = 1.0
+    MAX_PRICE_PRODUCT = 10000.0

@@ -1,8 +1,10 @@
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from autoslug import AutoSlugField
 from PIL import Image
 from transliterate import translit
 
+from core.constants import LenghtField
 from users.models import MyUser
 
 
@@ -25,11 +27,11 @@ def resize_image(image, max_size):
 class Category(models.Model):
     """Модель категорий товаров."""
     name = models.CharField(
-        max_length=20,
+        max_length=LenghtField.MAX_LENGT_NAME.value,
         verbose_name="Название категории"
     )
     slug = AutoSlugField(
-        max_length=255,
+        max_length=LenghtField.MAX_LEN_SLUG.value,
         populate_from=get_slug,
         unique=True,
         verbose_name="Слаг категории"
@@ -56,7 +58,7 @@ class Subcategory(models.Model):
     """Модель подкатегории товара."""
     name = models.CharField(
         unique=True,
-        max_length=250,
+        max_length=LenghtField.MAX_LENGT_NAME.value,
         verbose_name="Название",
     )
     category = models.ForeignKey(
@@ -67,7 +69,7 @@ class Subcategory(models.Model):
     )
     slug = AutoSlugField(
         unique=True,
-        max_length=200,
+        max_length=LenghtField.MAX_LEN_SLUG.value,
         populate_from=get_slug,
         verbose_name="Cлаг подкатегории"
     )
@@ -79,7 +81,7 @@ class Subcategory(models.Model):
     )
 
     class Meta:
-        verbose_name = "подкатегория"
+        verbose_name = "Подкатегория"
         verbose_name_plural = "Подкатегории"
         ordering = ("name",)
 
@@ -100,7 +102,7 @@ class Product(models.Model):
     )
     name = models.CharField(
         unique=True,
-        max_length=250,
+        max_length=LenghtField.MAX_LENGT_NAME.value,
         verbose_name="Название продукта"
     )
     subcategory = models.ForeignKey(
@@ -111,17 +113,30 @@ class Product(models.Model):
     )
     slug = AutoSlugField(
         unique=True,
-        max_length=200,
+        max_length=LenghtField.MAX_LEN_SLUG.value,
         populate_from=get_slug,
         verbose_name="Cлаг продукта"
     )
     price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        verbose_name="Стоимость продукта"
+        verbose_name="Стоимость продукта",
+        validators=[
+            MinValueValidator(
+                LenghtField.MIN_PRICE_PRODUCT.value,
+                message=f"Минимальное стоимость продукта "
+                        f"должна быть не меньше "
+                        f"{LenghtField.MIN_PRICE_PRODUCT.value}.",
+            ),
+            MaxValueValidator(
+                LenghtField.MAX_PRICE_PRODUCT.value,
+                message=f"Максимальная стоимость продукта "
+                        f"должна быть не больше {LenghtField.MAX_PRICE_PRODUCT.value}.",
+            ),
+        ],
     )
     measurement_unit = models.CharField(
-        max_length=50,
+        max_length=LenghtField.MAX_LENGT_MEASUREMENT_UNIT.value,
         choices=UNIT_CHOICES,
         default="kg",
         verbose_name="Единица измерения"
@@ -207,17 +222,32 @@ class ShoppingCartProduct(models.Model):
         ProductCart,
         on_delete=models.CASCADE,
         related_name="shopping_cart_products",
-        verbose_name="Продуктовая корзина"
+        verbose_name="Продуктовая корзина",
+        db_index=True,
     )
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,
-        related_name="products",
-        verbose_name="Продукт"
+        related_name="shopping_cart_products",
+        verbose_name="Продукт",
+        db_index=True,
     )
     amount = models.PositiveSmallIntegerField(
         default=1,
-        verbose_name="Количество продуктов в корзине"
+        verbose_name="Количество продуктов в корзине",
+        validators=[
+            MinValueValidator(
+                LenghtField.MIN_AMOUNT_PRODUCT.value,
+                message=f"Минимальное количество продукта "
+                        f"должно быть не меньше "
+                        f"{LenghtField.MIN_AMOUNT_PRODUCT.value}.",
+            ),
+            MaxValueValidator(
+                LenghtField.MAX_AMOUNT_PRODUCT.value,
+                message=f"Максимально количество продукта "
+                        f"не превышает {LenghtField.MAX_AMOUNT_PRODUCT.value}.",
+            ),
+        ],
     )
     date_created = models.DateTimeField(
         auto_now_add=True,
