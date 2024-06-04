@@ -1,0 +1,296 @@
+[
+  {
+    "name": "Клубника",
+    "price": "300",
+    "measurement_unit": "kg",
+    "subcategory_name": "Ягоды"
+  },
+  {
+    "name": "Земляника",
+    "price": "250",
+    "measurement_unit": "kg",
+    "subcategory_name": "Ягоды"
+  },
+  {
+    "name": "Малина",
+    "price": "400",
+    "measurement_unit": "kg",
+    "subcategory_name": "Ягоды"
+  },
+  {
+    "name": "Черника",
+    "price": "350",
+    "measurement_unit": "kg",
+    "subcategory_name": "Ягоды"
+  },
+  {
+    "name": "Лимон",
+    "price": "50",
+    "measurement_unit": "pcs",
+    "subcategory_name": "Цитрусовые"
+  },
+  {
+    "name": "Лайм",
+    "price": "40",
+    "measurement_unit": "pcs",
+    "subcategory_name": "Цитрусовые"
+  },
+  {
+    "name": "Грейпфрут",
+    "price": "100",
+    "measurement_unit": "kg",
+    "subcategory_name": "Цитрусовые"
+  },
+  {
+    "name": "Мандарин",
+    "price": "70",
+    "measurement_unit": "kg",
+    "subcategory_name": "Цитрусовые"
+  },
+  {
+    "name": "Манго",
+    "price": "200",
+    "measurement_unit": "pcs",
+    "subcategory_name": "Экзотические фрукты"
+  },
+  {
+    "name": "Маракуйя",
+    "price": "150",
+    "measurement_unit": "pcs",
+    "subcategory_name": "Экзотические фрукты"
+  },
+  {
+    "name": "Киви",
+    "price": "80",
+    "measurement_unit": "kg",
+    "subcategory_name": "Экзотические фрукты"
+  },
+  {
+    "name": "Морковь",
+    "price": "30",
+    "measurement_unit": "kg",
+    "subcategory_name": "Корнеплоды"
+  },
+  {
+    "name": "Свекла",
+    "price": "20",
+    "measurement_unit": "kg",
+    "subcategory_name": "Корнеплоды"
+  },
+  {
+    "name": "Картофель",
+    "price": "25",
+    "measurement_unit": "kg",
+    "subcategory_name": "Корнеплоды"
+  },
+  {
+    "name": "Лук",
+    "price": "15",
+    "measurement_unit": "kg",
+    "subcategory_name": "Корнеплоды"
+  },
+  {
+    "name": "Салат",
+    "price": "40",
+    "measurement_unit": "kg",
+    "subcategory_name": "Листовые овощи"
+  },
+  {
+    "name": "Шпинат",
+    "price": "50",
+    "measurement_unit": "kg",
+    "subcategory_name": "Листовые овощи"
+  },
+  {
+    "name": "Капуста",
+    "price": "20",
+    "measurement_unit": "kg",
+    "subcategory_name": "Листовые овощи"
+  },
+  {
+    "name": "Томаты",
+    "price": "80",
+    "measurement_unit": "kg",
+    "subcategory_name": "Плодовые овощи"
+  },
+  {
+    "name": "Огурцы",
+    "price": "60",
+    "measurement_unit": "kg",
+    "subcategory_name": "Плодовые овощи"
+  },
+  {
+    "name": "Перец",
+    "price": "70",
+    "measurement_unit": "kg",
+    "subcategory_name": "Плодовые овощи"
+  },
+  {
+    "name": "Баклажаны",
+    "price": "50",
+    "measurement_unit": "kg",
+    "subcategory_name": "Плодовые овощи"
+  },
+  {
+    "name": "Коровье молоко",
+    "price": "90",
+    "measurement_unit": "lt",
+    "subcategory_name": "Молоко"
+  },
+  {
+    "name": "Козье молоко",
+    "price": "120",
+    "measurement_unit": "lt",
+    "subcategory_name": "Молоко"
+  },
+  {
+    "name": "Соевое молоко",
+    "price": "80",
+    "measurement_unit": "lt",
+    "subcategory_name": "Молоко"
+  },
+  {
+    "name": "Чеддер",
+    "price": "200",
+    "measurement_unit": "kg",
+    "subcategory_name": "Сыры"
+  },
+  {
+    "name": "Моцарелла",
+    "price": "150",
+    "measurement_unit": "kg",
+    "subcategory_name": "Сыры"
+  },
+  {
+    "name": "Пармезан",
+    "price": "250",
+    "measurement_unit": "kg",
+    "subcategory_name": "Сыры"
+  },
+  {
+    "name": "Натуральный йогурт",
+    "price": "50",
+    "measurement_unit": "lt",
+    "subcategory_name": "Йогурты"
+  },
+  {
+    "name": "Греческий йогурт",
+    "price": "60",
+    "measurement_unit": "lt",
+    "subcategory_name": "Йогурты"
+  },
+    {
+    "name": "Фруктовый йогурт",
+    "price": "70",
+    "measurement_unit": "lt",
+      "subcategory_name": "Йогурты"
+  },
+  {
+    "name": "Каберне Совиньон",
+    "price": "500",
+    "measurement_unit": "pcs",
+    "subcategory_name": "Красные вина"
+  },
+  {
+    "name": "Мерло",
+    "price": "450",
+    "measurement_unit": "pcs",
+    "subcategory_name": "Красные вина"
+  },
+  {
+    "name": "Пино Нуар",
+    "price": "400",
+    "measurement_unit": "pcs",
+    "subcategory_name": "Красные вина"
+  },
+  {
+    "name": "Шардоне",
+    "price": "350",
+    "measurement_unit": "pcs",
+    "subcategory_name": "Белые вина"
+  },
+  {
+    "name": "Совиньон Блан",
+    "price": "300",
+    "measurement_unit": "pcs",
+    "subcategory_name": "Белые вина"
+  },
+  {
+    "name": "Рислинг",
+    "price": "250",
+    "measurement_unit": "pcs",
+    "subcategory_name": "Белые вина"
+  },
+  {
+    "name": "Розовый Зинфандель",
+    "price": "200",
+    "measurement_unit": "pcs",
+    "subcategory_name": "Розовые вина"
+  },
+  {
+    "name": "Розе д'Анжу",
+    "price": "180",
+    "measurement_unit": "pcs",
+    "subcategory_name": "Розовые вина"
+  },
+  {
+    "name": "Прованское Розе",
+    "price": "220",
+    "measurement_unit": "pcs",
+    "subcategory_name": "Розовые вина"
+  },
+  {
+    "name": "Миндаль",
+    "price": "150",
+    "measurement_unit": "kg",
+    "subcategory_name": "Орехи"
+  },
+  {
+    "name": "Грецкий орех",
+    "price": "200",
+    "measurement_unit": "kg",
+    "subcategory_name": "Орехи"
+  },
+  {
+    "name": "Фундук",
+    "price": "180",
+    "measurement_unit": "kg",
+    "subcategory_name": "Орехи"
+  },
+  {
+    "name": "Семена чиа",
+    "price": "50",
+    "measurement_unit": "kg",
+    "subcategory_name": "Семена"
+  },
+  {
+    "name": "Семена льна",
+    "price": "40",
+    "measurement_unit": "kg",
+    "subcategory_name": "Семена"
+  },
+  {
+    "name": "Тыквенные семечки",
+    "price": "30",
+    "measurement_unit": "kg",
+    "subcategory_name": "Семена"
+  },
+  {
+    "name": "Изюм",
+    "price": "70",
+    "measurement_unit": "kg",
+    "subcategory_name": "Сухофрукты"
+  },
+  {
+    "name": "Курага",
+    "price": "80",
+    "measurement_unit": "kg",
+    "subcategory_name": "Сухофрукты"
+  },
+  {
+    "name": "Чернослив",
+    "price": "90",
+    "measurement_unit": "kg",
+    "subcategory_name": "Сухофрукты"
+  }
+]
