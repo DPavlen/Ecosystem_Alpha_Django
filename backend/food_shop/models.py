@@ -1,7 +1,6 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from autoslug import AutoSlugField
-from PIL import Image
 from transliterate import translit
 
 from core.constants import LenghtField
@@ -18,23 +17,6 @@ def get_slug(instance):
         instance.name,
         'ru',
         reversed=True)
-
-
-def resize_image(image, max_size):
-    """
-     Изменяет размер изображения, сохраняя его пропорции, так чтобы
-    ни ширина, ни высота не превышали заданное максимальное значение.
-    Параметры:
-    image (File): Файл изображения, который нужно изменить.
-    max_size (int): Максимальное значение для ширины и высоты изображения.
-    Возвращает:
-    None: Функция изменяет размер изображения на месте и сохраняет его
-          в том же файле.
-    """
-
-    img = Image.open(image)
-    img.thumbnail((max_size, max_size))
-    img.save(image.path)
 
 
 class Category(models.Model):
@@ -207,25 +189,6 @@ class Product(models.Model):
         verbose_name="Дата добавления продукта"
     )
 
-    def save(self, *args, **kwargs):
-        """
-        Сохраняет текущий экземпляр и изменяет размер связанных изображений.
-        Есть ли у экземпляра изображения, назначенные полям `icon_small`,
-        `icon_middle` и `icon_big`, и изменяет их размер до предопределенных
-        размеров с помощью утилиты `resize_image`.
-        Параметры:
-        *args: Список аргументов переменной длины.
-        **kwargs: Произвольные именованные аргументы.
-        Возвращает: None
-            """
-        super().save(*args, **kwargs)
-        if self.icon_small:
-            resize_image(self.icon_small, 200)
-        if self.icon_middle:
-            resize_image(self.icon_middle, 400)
-        if self.icon_big:
-            resize_image(self.icon_big, 600)
-
     class Meta:
         verbose_name = "Продукт"
         verbose_name_plural = "Продукты"
@@ -292,7 +255,7 @@ class ShoppingCartProduct(models.Model):
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,
-        related_name="shopping_cart_products",
+        related_name="product_in_cart",
         verbose_name="Продукт",
         db_index=True,
     )
