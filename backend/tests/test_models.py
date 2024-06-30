@@ -6,9 +6,11 @@ from django.db.models import (
     DateTimeField,
     DecimalField,
     ImageField,
-    ForeignKey
+    ForeignKey,
+    PositiveSmallIntegerField
 )
 from django.test import TestCase
+from gunicorn.config import User
 from pytest import fixture, mark
 from pytest_django.asserts import assertRaisesMessage
 
@@ -97,6 +99,7 @@ class TestSubcategoryModel(TestCase):
         assert isinstance(Subcategory._meta.get_field("slug"), AutoSlugField)
         assert isinstance(Subcategory._meta.get_field("icon"), ImageField)
 
+
 @mark.django_db
 class TestProductModel(TestCase):
     """Тесты для модели продукта(Product)."""
@@ -173,3 +176,105 @@ class TestProductModel(TestCase):
                 "['Максимальная стоимость продукта должна быть не больше 10000.']"
         ):
             product.full_clean()
+
+
+@pytest.mark.django_db
+class TestProductCartModel(TestCase):
+    """Тесты для продуктовой корзины(ProductCart) у покупателя-пользователя."""
+
+    def test_models_fields(self):
+        """
+        Проверка полей модели ProductCart(ProductCart).
+        """
+        fields = ProductCart._meta.fields
+        fields_names = [field.name for field in fields]
+        assert "user" in fields_names
+        assert "date_created" in fields_names
+
+    def test_fields_types(self):
+        """
+        Проверка типов полей модели продукта(Product).
+        """
+        assert isinstance(ProductCart._meta.get_field("user"), ForeignKey)
+        assert isinstance(ProductCart._meta.get_field("date_created"), DateTimeField)
+
+    def test_str_representation(self):
+        """
+         Проверка строкового представления модели продуктовой корзины(ProductCart).
+        """
+        user = MyUser.objects.create(
+            username="Test_user"
+        )
+        product_cart = ProductCart.objects.create(
+            user=user
+        )
+        assert (
+                str(product_cart) == f"Покупатель-пользователь {product_cart.user}"
+        )
+
+
+@pytest.mark.django_db
+class TestShoppingCartProductModel(TestCase):
+    """Тесты для корзины покупок товаров(ShoppingCartProduct)
+     у покупателя-пользователя."""
+
+    def test_models_fields(self):
+        """
+        Проверка полей модели корзины покупок товаров (ShoppingCartProduct)
+        у покупателя-пользователя
+        .
+        """
+        fields = ShoppingCartProduct._meta.fields
+        fields_names = [field.name for field in fields]
+        assert "product_cart" in fields_names
+        assert "product" in fields_names
+        assert "amount" in fields_names
+        assert "date_created" in fields_names
+
+    def test_fields_types(self):
+        """
+        Проверка типов полей модели корзины
+        покупок товаров (ShoppingCartProduct).
+        """
+        assert isinstance(
+            ShoppingCartProduct._meta.get_field("product_cart"), ForeignKey)
+        assert isinstance(
+            ShoppingCartProduct._meta.get_field("product"), ForeignKey)
+        assert isinstance(
+            ShoppingCartProduct._meta.get_field("amount"), PositiveSmallIntegerField)
+        assert isinstance(
+            ShoppingCartProduct._meta.get_field("date_created"), DateTimeField)
+
+    def test_str_representation(self):
+        """
+        Проверка строкового представления модели корзины
+        покупок товаров (ShoppingCartProduct) у покупателя-пользователя..
+        """
+        user = MyUser.objects.create(
+            username="Test_user"
+        )
+        product_cart = ProductCart.objects.create(
+            user=user
+        )
+        category = Category.objects.create(
+            name="Test_Category_Фрукты"
+        )
+        subcategory = Subcategory.objects.create(
+            name="Test_Subcategory_Цитрусовые",
+            category=category
+        )
+        product = Product.objects.create(
+            name="Test_product_Lemon",
+            price="50",
+            subcategory=subcategory,
+            measurement_unit="шт"
+        )
+        shopping_cart_product = ShoppingCartProduct.objects.create(
+            product_cart=product_cart,
+            product=product,
+            amount=12
+        )
+        expected_str = (f"В продуктовой козине - пользователя {product_cart.user},"
+                        f" {product.name} в количестве {shopping_cart_product.amount} "
+                        f" {product.measurement_unit}")
+        assert str(shopping_cart_product) == expected_str
