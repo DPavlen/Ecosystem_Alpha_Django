@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "food_shop.apps.FoodShopConfig",
     "mptt",
     "api.v1.apps.ApiConfig",
+    "django_extensions",
 ]
 
 MIDDLEWARE = [

@@ -11,7 +11,7 @@ from django.db.models import (
 )
 from django.test import TestCase
 from gunicorn.config import User
-from pytest import fixture, mark
+from pytest import mark
 from pytest_django.asserts import assertRaisesMessage
 
 from core.constants import LenghtField

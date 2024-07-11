@@ -97,7 +97,7 @@ class ShoppingCartProductViewSet(viewsets.ModelViewSet):
         action_permissions = {
             "list": (IsOwnerOrReadOnlyOrAdmin(),),
             "retrieve": (IsOwnerOrReadOnlyOrAdmin(),),
-            "create": (IsOwnerOrReadOnlyOrAdmin(),),
+            "create": (permissions.IsAuthenticated(),),
             "update": (IsOwnerOrReadOnlyOrAdmin(),),
             "partial_update": (IsOwnerOrReadOnlyOrAdmin(),),
             "destroy": (IsOwnerOrReadOnlyOrAdmin(),),

@@ -129,10 +129,10 @@ class ShoppingCartProductSerializer(serializers.ModelSerializer):
         Parameters:
             instance (ShoppingCartProduct): Экземпляр товара в корзине покупок.
         Returns:
-            float: Общая стоимость товара.
+            Общая стоимость товара.
         """
 
-        return (instance.product.price * instance.amount)
+        return instance["product"].price * instance["amount"]
 
 
 class ShoppingCartSummarySerializer(serializers.Serializer):

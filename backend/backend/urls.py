@@ -8,7 +8,8 @@ from rest_framework import permissions
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/", include("api.v1.urls", namespace="api")),
+    #path("api/", include("api.v1.urls", namespace="api")),
+    path("api/", include("api.v1.urls")),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

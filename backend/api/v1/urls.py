@@ -8,7 +8,7 @@ from api.v1.views import (
     ShoppingCartProduct, ShoppingCartProductViewSet,
 )
 
-app_name = "api.v1"
+# app_name = "api.v1"
 
 router = routers.DefaultRouter()
 
